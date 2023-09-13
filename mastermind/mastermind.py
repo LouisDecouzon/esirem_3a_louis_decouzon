@@ -23,12 +23,25 @@ def reset_stats():
     game_number.close()
     os.system("attrib +h mastermind_game_number.txt")
 
+def comparison(guess:list,code:list):
+    partial,correct=0,0
+    c_buffer=c.copy()
+    for i in range (len(guess)) :
+        if guess[i] in c_buffer:
+            partial+=1
+            c_buffer.remove(guess[i])
+    for i in range(length_of_combination):
+        if guess[i]==code[i]:
+            correct+=1
+            partial-=1
+    return correct,partial
+
 ingame=False
 partial=0
 correct=0
 choice=str(input("Type p to play, q to quit or r to reset your statistics "))
 if choice not in ["p","q","r"]:
-    replay=str(input("Pls type either p, q or r"))
+    replay=str(input("Pls type either p, q or r "))
 if choice=="p":
     ingame=True
 if choice =="q":
@@ -59,17 +72,8 @@ while ingame==True: #initial loop to begin to play a game of mastermind (find ON
             score.close()
             os.system("attrib +h mastermind_score.txt")
             break
-        for i in range (len(g)) :
-            if g[i] in c_buffer:
-                partial+=1
-                c_buffer.remove(g[i])
-                print(c_buffer)
-        print(partial)
-        for i in range(length_of_combination):
-            if g[i]==c[i]:
-                correct+=1
-                partial-=1
-        print("correct: "+str(correct)+"\n"+"partial: "+str(partial))
+        a=comparison(g_to_list,c)       
+        print("correct: "+str(a[0])+"\n"+"partial: "+str(a[1]))
         partial,correct=0,0
         tries+=1
         c_buffer=c.copy()
