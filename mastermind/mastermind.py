@@ -12,12 +12,12 @@ def combination_to_guess(length:int): #returns a string
 
 def reset_stats():
     os.system("attrib -h mastermind_score.txt")
-    score=open("mastermind_score.txt","w")
+    score=open("mastermind_score.txt","w")#resets the score file
     score.close()
     os.system("attrib +h mastermind_score.txt")
 
     os.system("attrib -h mastermind_game_number.txt")
-    game_number=open("mastermind_game_number.txt","w")
+    game_number=open("mastermind_game_number.txt","w")#resets the game_number file
     game_number.truncate()
     game_number.write("0")
     game_number.close()
@@ -28,31 +28,27 @@ correct=0
 choice=str(input("Type p to play, q to quit or r to reset your statistics "))
 if choice not in ["p","q","r"]:
     replay=str(input("Pls type either p, q or r"))
-
 if choice=="p":
     ingame=True
 if choice =="q":
     print("see you")
 if choice =="r": # choosing to reset the statistics do not entail palying a game, hence nothing happens once stats are get reset
-    os.system("attrib -h mastermind_game_number.txt")
-    stat=open("mastermind_game_number.txt","w")
-    stat.truncate()
-    stat.write("0")
-    stat.close()
-    os.system("attrib +h mastermind_game_number.txt")
+    reset_stats()
+
 
 
 while ingame==True: #initial loop to begin to play a game of mastermind (find ONE code)
     c=combination_to_guess(length_of_combination)
     print(c)
     tries=1
-    while tries!=try_limit:
+    while tries<=try_limit:
         g=str(input("Pls input a combination of r(red) g(greeg) b(blue) y(yellow) p(purple) w(white) , for instance rgrp "))
         if g==c:
             print("you won in "+str(tries)+" tries")
             os.system("attrib -h mastermind_score.txt")
             score=open("mastermind_score.txt","a")
             score.write(str(try_limit-tries))
+            score.write("\n")
             score.close()
             os.system("attrib +h mastermind_score.txt")
             break
@@ -83,16 +79,11 @@ while ingame==True: #initial loop to begin to play a game of mastermind (find ON
     if replay=="q":
         ingame=False
     if replay=="r":
-        os.system("attrib -h mastermind_game_number.txt")
-        stat=open("mastermind_game_number.txt","w")
-        stat.truncate()
-        stat.write("0")
-        stat.close()
-        os.system("attrib +h mastermind_game_number.txt")
-    uiop=str(input("Wanna play again? y for yes, n for no "))
-    if uiop not in ["y","n"]:
-        uiop=str(input("Pls type either y or n "))
-    if uiop=="n":
-        ingame=False
+        reset_stats()
+        uiop=str(input("Wanna play again? y for yes, n for no "))
+        if uiop not in ["y","n"]:
+            uiop=str(input("Pls type either y or n "))
+        if uiop=="n":
+            ingame=False
     
 
