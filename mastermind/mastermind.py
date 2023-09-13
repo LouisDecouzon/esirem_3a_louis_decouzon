@@ -43,6 +43,8 @@ while ingame==True: #initial loop to begin to play a game of mastermind (find ON
     tries=1
     while tries<=try_limit:
         g=str(input("Pls input a combination of r(red) g(greeg) b(blue) y(yellow) p(purple) w(white) , for instance rgrp "))
+        if len(g)!=4:
+            g=str(input("Pls enter a four digit code"))
         if g==c:
             print("you won in "+str(tries)+" tries")
             os.system("attrib -h mastermind_score.txt")
@@ -55,7 +57,7 @@ while ingame==True: #initial loop to begin to play a game of mastermind (find ON
         for i in g:
             if i in c:
                 partial+=1
-        for i in range(length_of_combination):
+        for i in range(length_of_combination):# doesn't work completely
             if g[i]==c[i]:
                 correct+=1
                 partial-=1
