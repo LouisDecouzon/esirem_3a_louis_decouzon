@@ -5,9 +5,9 @@ try_limit=12
 colours=["r","g","b","y","p","w"] # red, green, blue, yellow, purple, white
 length_of_combination=4
 def combination_to_guess(length:int): #returns a string 
-    l=""
+    l=[]
     for i in range(length):
-        l+=(rd.choice(colours))
+        l.append(rd.choice(colours))
     return l
 
 def reset_stats():
@@ -22,6 +22,7 @@ def reset_stats():
     game_number.write("0")
     game_number.close()
     os.system("attrib +h mastermind_game_number.txt")
+
 ingame=False
 partial=0
 correct=0
@@ -32,7 +33,7 @@ if choice=="p":
     ingame=True
 if choice =="q":
     print("see you")
-if choice =="r": # choosing to reset the statistics do not entail palying a game, hence nothing happens once stats are get reset
+if choice =="r": # choosing to reset the statistics do not entail palying a game, hence nothing happens once stats get reset
     reset_stats()
 
 
@@ -40,32 +41,40 @@ if choice =="r": # choosing to reset the statistics do not entail palying a game
 while ingame==True: #initial loop to begin to play a game of mastermind (find ONE code)
     c=combination_to_guess(length_of_combination)
     print(c)
+    c_buffer=c.copy()
     tries=1
     while tries<=try_limit:
-        g=str(input("Pls input a combination of r(red) g(greeg) b(blue) y(yellow) p(purple) w(white) , for instance rgrp "))
+        g=str(input("Pls input a combination of r(red) g(green) b(blue) y(yellow) p(purple) w(white) , for instance rgrp ")) # People are asked to input
+        #a string, that is converted into a list in order to be able to remove elements form it during the comparison with the secret code 
+        g_to_list=[i for i in g]
         if len(g)!=4:
-            g=str(input("Pls enter a four digit code"))
-        if g==c:
+            g=str(input("Pls enter a four digit code "))
+            g_to_list=[i for i in g]
+        if g_to_list==c:
             print("you won in "+str(tries)+" tries")
             os.system("attrib -h mastermind_score.txt")
             score=open("mastermind_score.txt","a")
-            score.write(str(try_limit-tries))
+            score.write(str(try_limit-tries))# shows, appends the score (number of tries minus your number or tries to find the code), closes and hides
             score.write("\n")
             score.close()
             os.system("attrib +h mastermind_score.txt")
             break
-        for i in g:
-            if i in c:
+        for i in range (len(g)) :
+            if g[i] in c_buffer:
                 partial+=1
-        for i in range(length_of_combination):# doesn't work completely
+                c_buffer.remove(g[i])
+                print(c_buffer)
+        print(partial)
+        for i in range(length_of_combination):
             if g[i]==c[i]:
                 correct+=1
                 partial-=1
         print("correct: "+str(correct)+"\n"+"partial: "+str(partial))
         partial,correct=0,0
         tries+=1
-    game_number=os.system("attrib -h mastermind_game_number.txt")# l52->l61 : opens, takes the values, closes, opens with write mode to clear the text, then writes the value +1, then closes again and hides
-    game_number=open("mastermind_game_number.txt","r+")
+        c_buffer=c.copy()
+    game_number=os.system("attrib -h mastermind_game_number.txt")# l52->l61 : opens, takes the values, closes, opens with write mode to clear the text
+    game_number=open("mastermind_game_number.txt","r+")# then writes the value +1, then closes again and hides
     gn=game_number.read()
     gn=int(gn)
     game_number.close()
@@ -82,10 +91,10 @@ while ingame==True: #initial loop to begin to play a game of mastermind (find ON
         ingame=False
     if replay=="r":
         reset_stats()
-        uiop=str(input("Wanna play again? y for yes, n for no "))
-        if uiop not in ["y","n"]:
-            uiop=str(input("Pls type either y or n "))
-        if uiop=="n":
+        play_after_resetting=str(input("Wanna play again? y for yes, n for no "))
+        if play_after_resetting not in ["y","n"]:
+            play_after_resetting=str(input("Pls type either y or n "))
+        if play_after_resetting=="n":
             ingame=False
     
 
