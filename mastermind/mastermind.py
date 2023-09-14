@@ -2,9 +2,10 @@ import random as rd
 import os
 
 try_limit=12
+ai_try_limit=1000
 colours=["r","g","b","y","p","w"] # red, green, blue, yellow, purple, white
 length_of_combination=4
-def combination_to_guess(length:int): #returns a string 
+def combination_to_guess(length:int): #returns a  list
     l=[]
     for i in range(length):
         l.append(rd.choice(colours))
@@ -35,19 +36,21 @@ def comparison(guess:list,code:list):
             correct+=1
             partial-=1
     return correct,partial
-
+ai_game=False
 ingame=False
 partial=0
 correct=0
-choice=str(input("Type p to play, q to quit or r to reset your statistics "))
-if choice not in ["p","q","r"]:
-    replay=str(input("Pls type either p, q or r "))
+choice=str(input("Type p to play, q to quit or r to reset your statistics or ai to make the computer guess a code "))
+if choice not in ["p","q","r","ai"]:
+    replay=str(input("Pls type either p, q, r or ai "))
 if choice=="p":
     ingame=True
 if choice =="q":
     print("see you")
 if choice =="r": # choosing to reset the statistics do not entail palying a game, hence nothing happens once stats get reset
     reset_stats()
+if choice=="ai":
+    ai_game=True
 
 
 
@@ -61,7 +64,7 @@ while ingame==True: #initial loop to begin to play a game of mastermind (find ON
         #a string, that is converted into a list in order to be able to remove elements form it during the comparison with the secret code 
         g_to_list=[i for i in g]
         if len(g)!=4:
-            g=str(input("Pls enter a four digit code "))
+            g=str(input("Pls enter a four letter long code "))
             g_to_list=[i for i in g]
         if g_to_list==c:
             print("you won in "+str(tries)+" tries")
@@ -100,5 +103,27 @@ while ingame==True: #initial loop to begin to play a game of mastermind (find ON
             play_after_resetting=str(input("Pls type either y or n "))
         if play_after_resetting=="n":
             ingame=False
-    
 
+while ai_game==True:
+    c=str(input("Enter a code you want the machine to guess for example rgww "))
+    if len(c)!=length_of_combination:
+        c=str(input("Pls enter a four letter long code "))
+    for i in c :
+        if i not in colours:
+            c=str(input("Pls enter valid colours (r,g,b,y,w,p) "))
+    c_list=[i for i in c]
+    ai_try=1
+    while ai_try< ai_try_limit:
+        g=combination_to_guess(length_of_combination)
+        #print(g)
+        if g==c_list:
+            print("The machine guessed your code in "+str(ai_try)+" tries")
+            break
+        ai_try+=1
+    if ai_try==ai_try_limit:
+        print("The machine did not guess the code in "+str(ai_try_limit))
+    ai_replay=str(input("Type y to play again or n if you do not want to "))
+    if ai_replay not in ["y","n"]:
+        ai_replay=str(input("Pls type either y or n "))
+    if ai_replay=="n":
+        ai_game=False
