@@ -24,6 +24,13 @@ def reset_stats():
     game_number.close()
     os.system("attrib +h mastermind_game_number.txt")
 
+    os.system("attrib -h mastermind_ai_score.txt")
+    ai_score=open("mastermind_ai_score.txt","w")#resets the ai_score file
+    ai_score.close()
+    os.system("attrib +h mastermind_ai_score.txt")
+
+
+
 def comparison(guess:list,code:list):
     partial,correct=0,0
     c_buffer=c.copy()
@@ -105,12 +112,13 @@ while ingame==True: #initial loop to begin to play a game of mastermind (find ON
             ingame=False
 
 while ai_game==True:
-    c=str(input("Enter a code you want the machine to guess for example rgww "))
-    if len(c)!=length_of_combination:
-        c=str(input("Pls enter a four letter long code "))
-    for i in c :
-        if i not in colours:
-            c=str(input("Pls enter valid colours (r,g,b,y,w,p) "))
+    valid_code=False# l115->l121 prevents an invalid code to be written
+    while valid_code==False:
+        c=str(input("Enter a code you want the machine to guess for example rgww "))
+        if len(c)==length_of_combination:
+            for i in c:
+                if i in colours:
+                    valid_code=True    
     c_list=[i for i in c]
     ai_try=1
     while ai_try< ai_try_limit:
@@ -118,10 +126,22 @@ while ai_game==True:
         #print(g)
         if g==c_list:
             print("The machine guessed your code in "+str(ai_try)+" tries")
+            os.system("attrib -h mastermind_ai_score.txt")
+            ai_score=open("mastermind_ai_score.txt","a")
+            ai_score.write(str(ai_try))
+            ai_score.write('\n')
+            ai_score.close()
+            os.system("attrib +h mastermind_ai_score.txt")
             break
         ai_try+=1
     if ai_try==ai_try_limit:
         print("The machine did not guess the code in "+str(ai_try_limit))
+        os.system("attrib -h mastermind_ai_score.txt")
+        ai_score=open("mastermind_ai_score.txt","a")
+        ai_score.write("N/A")
+        ai_score.write('\n')
+        ai_score.close()
+        os.system("attrib +h mastermind_ai_score.txt")
     ai_replay=str(input("Type y to play again or n if you do not want to "))
     if ai_replay not in ["y","n"]:
         ai_replay=str(input("Pls type either y or n "))
