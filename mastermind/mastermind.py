@@ -1,5 +1,6 @@
 import random as rd
 import os
+import itertools
 
 try_limit=12
 ai_try_limit=1000
@@ -33,7 +34,7 @@ def reset_stats():
 
 def comparison(guess:list,code:list):
     partial,correct=0,0
-    c_buffer=c.copy()
+    c_buffer=code.copy()
     for i in range (len(guess)) :
         if guess[i] in c_buffer:
             partial+=1
@@ -43,13 +44,23 @@ def comparison(guess:list,code:list):
             correct+=1
             partial-=1
     return correct,partial
+
+
+arrang=[p for p in itertools.product(colours,repeat=4)] #cartesian product, returns a set
+existing_codes=[list(i) for i in arrang]#converts this set into a list
+#len(arr_list)=1296 good
+
 ai_game=False
 ingame=False
 partial=0
 correct=0
-choice=str(input("Type p to play, q to quit or r to reset your statistics or ai to make the computer guess a code "))
-if choice not in ["p","q","r","ai"]:
-    replay=str(input("Pls type either p, q, r or ai "))
+valid_choice=False# l58->l64 prevents an invalid code to be written
+while valid_choice==False:
+    choice=str(input("Type p to play, q to quit or r to reset your statistics or ai to make the computer guess a code "))
+    if len(choice)<=2:
+        for i in choice:
+            if i in ["p","q","r","ai"]:
+                valid_choice=True
 if choice=="p":
     ingame=True
 if choice =="q":
@@ -70,9 +81,6 @@ while ingame==True: #initial loop to begin to play a game of mastermind (find ON
         g=str(input("Pls input a combination of r(red) g(green) b(blue) y(yellow) p(purple) w(white) , for instance rgrp ")) # People are asked to input
         #a string, that is converted into a list in order to be able to remove elements form it during the comparison with the secret code 
         g_to_list=[i for i in g]
-        if len(g)!=4:
-            g=str(input("Pls enter a four letter long code "))
-            g_to_list=[i for i in g]
         if g_to_list==c:
             print("you won in "+str(tries)+" tries")
             os.system("attrib -h mastermind_score.txt")
@@ -111,6 +119,7 @@ while ingame==True: #initial loop to begin to play a game of mastermind (find ON
         if play_after_resetting=="n":
             ingame=False
 
+ai_try=1
 while ai_game==True:
     valid_code=False# l115->l121 prevents an invalid code to be written
     while valid_code==False:
@@ -119,31 +128,14 @@ while ai_game==True:
             for i in c:
                 if i in colours:
                     valid_code=True    
-    c_list=[i for i in c]
-    ai_try=1
-    while ai_try< ai_try_limit:
-        g=combination_to_guess(length_of_combination)
-        #print(g)
-        if g==c_list:
-            print("The machine guessed your code in "+str(ai_try)+" tries")
-            os.system("attrib -h mastermind_ai_score.txt")
-            ai_score=open("mastermind_ai_score.txt","a")
-            ai_score.write(str(ai_try))
-            ai_score.write('\n')
-            ai_score.close()
-            os.system("attrib +h mastermind_ai_score.txt")
-            break
-        ai_try+=1
-    if ai_try==ai_try_limit:
-        print("The machine did not guess the code in "+str(ai_try_limit))
-        os.system("attrib -h mastermind_ai_score.txt")
-        ai_score=open("mastermind_ai_score.txt","a")
-        ai_score.write("N/A")
-        ai_score.write('\n')
-        ai_score.close()
-        os.system("attrib +h mastermind_ai_score.txt")
-    ai_replay=str(input("Type y to play again or n if you do not want to "))
-    if ai_replay not in ["y","n"]:
-        ai_replay=str(input("Pls type either y or n "))
-    if ai_replay=="n":
-        ai_game=False
+    c_list=[i for i in c]#c_list for code list
+    print(c_list)
+    g=rd.choice(existing_codes)
+    print(g)
+    while g != c_list:
+        existing_codes.remove(g)
+        corr,part=comparison(g,c_list)
+        for i in existing_codes:
+            if comparison(i,g)[0]!= corr or comparison(i,g)[1]!=part:
+                existing_codes.remove(i)
+        #some codes have been removed from the list existing_codes
