@@ -1,0 +1,60 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-d0094a50bb2071803777.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.26"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "implementation_TD5",
+					"targetIndexes" : 
+					[
+						0
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "implementation_TD5::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-implementation_TD5-Debug-a32bde2a3e64fda72f15.json",
+					"name" : "implementation_TD5",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Users/louis/Desktop/esirem_3a/esirem_3a_louis_decouzon/td_et_tp/TDAlgo5/implementation_TD5/cmake-build-debug",
+		"source" : "C:/Users/louis/Desktop/esirem_3a/esirem_3a_louis_decouzon/td_et_tp/TDAlgo5/implementation_TD5"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 5
+	}
+}
